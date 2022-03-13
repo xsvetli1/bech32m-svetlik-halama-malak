@@ -3,12 +3,7 @@
 
 name: Java CI with Maven
 
-on:
-  push:
-    branches: [ addBech32mEncoding ]
-  pull_request:
-    branches: [ addBech32mEncoding ]
-  workflow_dispatch:
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
