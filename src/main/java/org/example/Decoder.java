@@ -6,10 +6,19 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Class wrapper for Bech32m decoding functions
+ * @author Kristián Malák
+ */
 public class Decoder {
     private static final String CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
     private static final int BECH32M_CONST = 0x2bc830a3;
 
+    /**
+     *
+     * @param values
+     * @return Bech32 checksum
+     */
     private static int bech32Polymod(int[] values) {
         int[] generator = {0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3};
         int chk = 1;
@@ -23,6 +32,11 @@ public class Decoder {
         return chk;
     }
 
+    /**
+     *
+     * @param hrp Human readable part
+     * @return Human readable part expanded/ready for checksum computation
+     */
     private static List<Integer> bech32HrpExpand(String hrp) {
         List<Integer> values = hrp.chars().map(x -> x >> 5).boxed().collect(Collectors.toList());
         values.add(0);
@@ -30,6 +44,12 @@ public class Decoder {
         return values;
     }
 
+    /**
+     * Checks the encoding type
+     * @param hrp Human readable part
+     * @param data Payload
+     * @return Encoding type (Bech32 or Bech32m) or null in case of error
+     */
     private static Encoding bech32_verify_checksum(String hrp, List<Integer> data) {
 
         int type = bech32Polymod(Stream.concat(bech32HrpExpand(hrp).stream(), data.stream()).mapToInt(Integer::intValue).toArray());
@@ -42,6 +62,11 @@ public class Decoder {
         return null;
     }
 
+    /**
+     * Decodes the Bech32(m) message
+     * @param bech message
+     * @return Human readable part, Payload, Encoding type or null in case of bad format
+     */
     static List<Object> bech32Decode(String bech) {
         if (!bech.toLowerCase().equals(bech) && !bech.toUpperCase().equals(bech)) {
             return null;
@@ -71,6 +96,13 @@ public class Decoder {
         return List.of(hrp, data.subList(0, data.size()-6), spec);
     }
 
+    /**
+     * General power-of-2 base conversion
+     * @param data
+     * @param frombits
+     * @param tobits
+     * @return converted data
+     */
     private static List<Integer> convertBits(List<Integer> data, int frombits, int tobits) {
         int acc = 0;
         int bits = 0;
@@ -94,7 +126,13 @@ public class Decoder {
         return ret;
     }
 
-    public static Message decode(String hrp, String addr) {
+    /**
+     * Decode a segwit address
+     * @param hrp Human readable part
+     * @param addr Segwit address
+     * @return Message object containing the encoding type and payload, or null in case of malformed address
+     */
+    public static Segwit decode(String hrp, String addr) {
         List<Object> bech32Decoded = bech32Decode(addr);
         if (bech32Decoded == null){
             return null;
@@ -116,27 +154,34 @@ public class Decoder {
             return null;
         if (data.get(0) == 0 && spec != Encoding.BECH32 || data.get(0) != 0 && spec != Encoding.BECH32M)
             return null;
-        return new Message(data.get(0), decoded);
+        return new Segwit(data.get(0), decoded);
     }
 
     public static void main(String[] args) {
-        Message message = decode("bc", "BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4");
-        assert message != null;
-        System.out.println(message.getType());
-        System.out.println(message.getContent());
+        Segwit segwit = decode("bc", "BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4");
+        assert segwit != null;
+        System.out.println(segwit.getType());
+        System.out.println(segwit.getContent());
     }
 }
 
+/**
+ * Enum to distinguish between Bech32 and Bech32m
+ */
 enum Encoding {
     BECH32,
     BECH32M
 }
 
-class Message {
+
+/**
+ * Class representing a Segwit address, with encoding type (Bech32(m)) and the payload
+ */
+class Segwit {
     private final int type;
     private final List<Integer> content;
 
-    public Message(int type, List<Integer> content) {
+    public Segwit(int type, List<Integer> content) {
         this.type = type;
         this.content = content;
     }
