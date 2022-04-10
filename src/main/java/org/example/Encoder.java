@@ -5,12 +5,9 @@ import java.util.Locale;
 /**
  * Provides basic functionality for bech32m encoding/decoding.
  *
- * @author Kristian Malak
  * @author Ľuboslav Halama
  */
-public class Bech32m {
-
-	private static final int BECH32M_CONST = 0x2bc830a3;
+public class Encoder {
 
 	private static final byte CHECKSUM_LEN = 6;
 
@@ -37,55 +34,6 @@ public class Bech32m {
 		return true;
 	}
 
-
-	/**
-	 * Computes the Bech32 checksum.
-	 *
-	 * @param values used to compute checksum
-	 * @return checksum
-	 */
-	private static int bech32Polymod(byte[] values) {
-		int[] generator = {0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3};
-
-		int checksum = 1;
-		int top;
-
-		for (int charIndex = 0; charIndex < values.length; charIndex++) {
-			top = (checksum >>> 25) & 0xFF;
-			checksum = ((checksum & 0x1FFFFFF) << 5) ^ (values[charIndex] & 0xFF);
-
-			for (int j = 0; j < 5; j++) {
-				checksum ^= ((top >> j) & 1) == 1 ? generator[j] : 0;
-			}
-		}
-
-		return checksum;
-	}
-
-	/**
-	 * Expand human-readable part (hrp) into values for checksum computation.
-	 *
-	 * @param hrp human readable part
-	 * @return expanded hrp
-	 */
-	private static byte[] hrpExpand(final String hrp) {
-		byte[] expanded = new byte[hrp.length() * 2 + 1];
-
-		for (int index = 0; index < hrp.length(); index++) {
-
-			// first half of expanded array
-			expanded[index] = (byte) (hrp.charAt(index) >>> 5);
-
-			// second half of expanded array
-			expanded[index + hrp.length() + 1] = (byte) (hrp.charAt(index) & 0x1F);
-		}
-
-		// put zero into the middle of expanded array
-		expanded[hrp.length()] = 0;
-
-		return expanded;
-	}
-
 	/**
 	 * Computes the checksum using given human-readable part (HRP) and data
 	 *
@@ -96,7 +44,7 @@ public class Bech32m {
 	private static byte[] createCheckSum(final String hrp, final byte[] data) {
 
 		// expand HRP
-		byte[] expandedHRP = hrpExpand(hrp);
+		byte[] expandedHRP = Bech32mUtils.hrpExpand(hrp);
 
 		// create large enough array of bytes
 		byte[] values = new byte[expandedHRP.length + data.length + CHECKSUM_LEN];
@@ -105,7 +53,7 @@ public class Bech32m {
 		System.arraycopy(expandedHRP, 0, values, 0, expandedHRP.length);
 		System.arraycopy(data, 0, values, expandedHRP.length, data.length);
 
-		int polymod = bech32Polymod(values) ^ BECH32M_CONST;
+		int polymod = Bech32mUtils.bech32Polymod(values) ^ Bech32mUtils.BECH32M_CONST;
 
 		byte[] checksum = new byte[CHECKSUM_LEN];
 		for (short i = 0; i < CHECKSUM_LEN; i++) {

@@ -3,7 +3,7 @@ package org.example;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class Bech32mTest {
+public class EncoderTest {
 
 	private class Bech32mBlock {
 
@@ -43,7 +43,7 @@ public class Bech32mTest {
 		};
 
 		for (int i = 0; i < inputs.length; i++) {
-			Assert.assertEquals(expected[i], Bech32m.encode(inputs[i].hrp, inputs[i].data));
+			Assert.assertEquals(expected[i], Encoder.encode(inputs[i].hrp, inputs[i].data));
 		}
 	}
 }
