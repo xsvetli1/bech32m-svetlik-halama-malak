@@ -50,16 +50,8 @@ public class Decoder {
      * @param data Payload
      * @return Encoding type (Bech32 or Bech32m) or null in case of error
      */
-    private static Encoding bech32_verify_checksum(String hrp, List<Integer> data) {
-
-        int type = bech32Polymod(Stream.concat(bech32HrpExpand(hrp).stream(), data.stream()).mapToInt(Integer::intValue).toArray());
-        if (type ==1) {
-            return Encoding.BECH32;
-        }
-        if (type ==BECH32M_CONST) {
-            return Encoding.BECH32M;
-        }
-        return null;
+    private static boolean bech32_verify_checksum(String hrp, List<Integer> data) {
+        return bech32Polymod(Stream.concat(bech32HrpExpand(hrp).stream(), data.stream()).mapToInt(Integer::intValue).toArray()) == BECH32M_CONST;
     }
 
     /**
@@ -88,109 +80,11 @@ public class Decoder {
         }
         String hrp = bech.substring(0, pos);
         List<Integer> data = bech.substring(pos+1).chars().map(CHARSET::indexOf).boxed().collect(Collectors.toList());
-        Encoding spec = bech32_verify_checksum(hrp, data);
-        if (spec == null) {
+        boolean spec = bech32_verify_checksum(hrp, data);
+
+        if (!spec) {
             return null;
         }
-
-        return List.of(hrp, data.subList(0, data.size()-6), spec);
-    }
-
-    /**
-     * General power-of-2 base conversion
-     * @param data
-     * @param frombits
-     * @param tobits
-     * @return converted data
-     */
-    private static List<Integer> convertBits(List<Integer> data, int frombits, int tobits) {
-        int acc = 0;
-        int bits = 0;
-        List<Integer> ret = new ArrayList<Integer>();
-        int maxv = (1 << tobits) - 1;
-        int max_acc = (1 << (frombits + tobits - 1)) - 1;
-        for (int value : data) {
-            if (value < 0 || (value >> frombits) >= 1) {
-                return null;
-            }
-            acc = ((acc << frombits) | value) & max_acc;
-            bits += frombits;
-            while (bits >= tobits) {
-                bits -= tobits;
-                ret.add((acc >> bits) & maxv);
-            }
-        }
-        if (bits >= frombits || (((acc << (tobits - bits)) & maxv) >= 1)) {
-            return null;
-        }
-        return ret;
-    }
-
-    /**
-     * Decode a segwit address
-     * @param hrp Human readable part
-     * @param addr Segwit address
-     * @return Message object containing the encoding type and payload, or null in case of malformed address
-     */
-    public static Segwit decode(String hrp, String addr) {
-        List<Object> bech32Decoded = bech32Decode(addr);
-        if (bech32Decoded == null){
-            return null;
-        }
-        String hrpgot = (String) bech32Decoded.get(0);
-        List<Integer> data = (List<Integer>) bech32Decoded.get(1);
-        Encoding spec = (Encoding) bech32Decoded.get(2);
-        if (!Objects.equals(hrpgot, hrp)) {
-            return null;
-        }
-        List<Integer> decoded = convertBits(data.subList(1, data.size()), 5, 8);
-        if (decoded == null || decoded.size() < 2 || decoded.size() > 40) {
-            return null;
-        }
-        if (data.get(0) > 16) {
-            return null;
-        }
-        if (data.get(0) == 0 && decoded.size() != 20 && decoded.size() != 32)
-            return null;
-        if (data.get(0) == 0 && spec != Encoding.BECH32 || data.get(0) != 0 && spec != Encoding.BECH32M)
-            return null;
-        return new Segwit(data.get(0), decoded);
-    }
-
-    public static void main(String[] args) {
-        Segwit segwit = decode("bc", "BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4");
-        assert segwit != null;
-        System.out.println(segwit.getType());
-        System.out.println(segwit.getContent());
-    }
-}
-
-/**
- * Enum to distinguish between Bech32 and Bech32m
- */
-enum Encoding {
-    BECH32,
-    BECH32M
-}
-
-
-/**
- * Class representing a Segwit address, with encoding type (Bech32(m)) and the payload
- */
-class Segwit {
-    private final int type;
-    private final List<Integer> content;
-
-    public Segwit(int type, List<Integer> content) {
-        this.type = type;
-        this.content = content;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public List<Integer> getContent() {
-        return content;
+        return List.of(hrp, data.subList(0, data.size()-6));
     }
 }
