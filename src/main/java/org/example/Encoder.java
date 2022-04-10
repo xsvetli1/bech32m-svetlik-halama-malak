@@ -8,10 +8,10 @@ import java.util.Locale;
  * @author Ľuboslav Halama
  */
 public class Encoder {
-
-	private static final byte CHECKSUM_LEN = 6;
-
-	private static final String BECH32M_CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+	/**
+	 * private override of default public constructor
+	 */
+	private Encoder() {}
 
 	private static boolean checkInput(final String hrp) {
 
@@ -47,7 +47,7 @@ public class Encoder {
 		byte[] expandedHRP = Bech32mUtils.hrpExpand(hrp);
 
 		// create large enough array of bytes
-		byte[] values = new byte[expandedHRP.length + data.length + CHECKSUM_LEN];
+		byte[] values = new byte[expandedHRP.length + data.length + Bech32mUtils.CHECKSUM_LEN];
 
 		// copy both expanded HRP and data (right after it) into newly created array
 		System.arraycopy(expandedHRP, 0, values, 0, expandedHRP.length);
@@ -55,9 +55,9 @@ public class Encoder {
 
 		int polymod = Bech32mUtils.bech32Polymod(values) ^ Bech32mUtils.BECH32M_CONST;
 
-		byte[] checksum = new byte[CHECKSUM_LEN];
-		for (short i = 0; i < CHECKSUM_LEN; i++) {
-			checksum[i] = (byte) ((polymod >>> (CHECKSUM_LEN - 1) * ((CHECKSUM_LEN - 1) - i)) & 0x1F);
+		byte[] checksum = new byte[Bech32mUtils.CHECKSUM_LEN];
+		for (short i = 0; i < Bech32mUtils.CHECKSUM_LEN; i++) {
+			checksum[i] = (byte) ((polymod >>> (Bech32mUtils.CHECKSUM_LEN - 1) * ((Bech32mUtils.CHECKSUM_LEN - 1) - i)) & 0x1F);
 		}
 
 		return checksum;
@@ -75,11 +75,11 @@ public class Encoder {
 		// convert to lower
 		hrp = hrp.toLowerCase(Locale.ROOT);
 
-		byte[] dataWithChecksum = new byte[data.length + CHECKSUM_LEN];
+		byte[] dataWithChecksum = new byte[data.length + Bech32mUtils.CHECKSUM_LEN];
 
 		// Combine (serialize) data and checksum (right behind data)
 		System.arraycopy(data, 0, dataWithChecksum, 0, data.length);
-		System.arraycopy(createCheckSum(hrp, data), 0, dataWithChecksum, data.length, CHECKSUM_LEN);
+		System.arraycopy(createCheckSum(hrp, data), 0, dataWithChecksum, data.length, Bech32mUtils.CHECKSUM_LEN);
 
 		StringBuilder encoded = new StringBuilder(hrp.length() + 1 +dataWithChecksum.length);
 
@@ -88,7 +88,7 @@ public class Encoder {
 		encoded.append('1');
 
 		for (byte value : dataWithChecksum) {
-			encoded.append(BECH32M_CHARSET.charAt(value));
+			encoded.append(Bech32mUtils.BECH32M_CHARSET.charAt(value));
 		}
 
 		return isLowerCase ? encoded.toString() : encoded.toString().toUpperCase(Locale.ROOT);
