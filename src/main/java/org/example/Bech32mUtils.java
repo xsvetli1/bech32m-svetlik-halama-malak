@@ -1,5 +1,9 @@
 package org.example;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
 /**
  * Class provides common functionality used in both encoding and decoding.
  *
@@ -62,6 +66,44 @@ public class Bech32mUtils {
         // put zero into the middle of expanded array
         expanded[hrp.length()] = 0;
 
-        return expanded;
-    }
+		return expanded;
+	}
+
+	/**
+	 * Checks validity of HRP (Human-readable part).
+	 *
+	 * Method checks two things:
+	 *   1.) HRP is either in lowercase or uppercase, but not both (only one set of characters)
+	 *   2.) HRP contains only valid characters (33-126 value range)
+	 *
+	 * @param hrp human-readable part
+	 * @return boolean true, if hrp is valid, false otherwise
+	 */
+	public static boolean isHRPValid(final String hrp) {
+
+		boolean isValid = true;
+		boolean containsLetter = hrp.matches(".*[a-zA-Z].*");
+
+		// only one of them can be true (it is either lowercase or uppercase)
+		if (hrp.equals(hrp.toLowerCase(Locale.ROOT)) == hrp.equals(hrp.toUpperCase(Locale.ROOT))) {
+			// last check, if HRP does not contain any letter, lowercase and uppercase will be the same,
+			// thus it must contain at least one letter to make it invalid
+			if (containsLetter) {
+				isValid = false;
+			}
+		}
+
+		for (char x : hrp.toCharArray()) {
+			if (x < 33 || x > 126) {
+				isValid = false;
+			}
+		}
+
+		if (hrp.length() < 1 || hrp.length() > 83) {
+			isValid = false;
+		}
+
+		return isValid;
+	}
+
 }
