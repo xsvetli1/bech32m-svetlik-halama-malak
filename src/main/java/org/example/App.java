@@ -54,7 +54,7 @@ public class App
         } else if (operation.equals(Operation.DECODE)) {
             List<Object> hrpAndPayload = Decoder.bech32Decode(bech32mBytesToString(input));
             String outHRP = (String) hrpAndPayload.get(0);
-            List<Integer> outPayload = (List<Integer>) hrpAndPayload.get(1);
+            List<Byte> outPayload = (List<Byte>) hrpAndPayload.get(1);
             writeOutput(outHRP, outPayload);
         }
     }
@@ -87,7 +87,9 @@ public class App
                 case D_FLAG:
                     operation = Operation.DECODE;
                     inputFormat = InOutFormat.BECH32M;
-                    outputFormat = InOutFormat.BASE64;
+                    outputFormat = outputFormat != InOutFormat.BECH32M
+                            ? outputFormat
+                            : InOutFormat.BASE64;
                     break;
                 case IN_FLAG:
                     inputFile = args[++i];
@@ -192,7 +194,7 @@ public class App
         return new String(Bytes.toArray(data));
     }
 
-    private static void writeOutput(String outputHrp, List<Integer> payload) {
+    private static void writeOutput(String outputHrp, List<Byte> payload) {
         if (outputFormat.equals(InOutFormat.BINARY)) {
             writeBinaryOutput(outputHrp, payload);
         } else {
@@ -200,25 +202,19 @@ public class App
         }
     }
 
-    private static void writeBinaryOutput(String outputHrp, List<Integer> payload) {
+    private static void writeBinaryOutput(String outputHrp, List<Byte> payload) {
         try(PrintStream printStream = outputFile != null ? new PrintStream(outputFile) : System.out) {
             printStream.print(outputHrp);
-            for (Integer b : payload) {
-                printStream.print(b.byteValue());
+            for (Byte b : payload) {
+                printStream.print(b);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void writeTextOutput(String outputHrp, List<Integer> payload) {
-        // DUMMY CODE TO BE REMOVED AFTER DECODER IS CHANGED TO RETURN List<Byte>
-        // ======================================================================
-        byte[] outputBytes = new byte[payload.size()];
-        for (int i = 0; i < payload.size(); i++) {
-            outputBytes[i] = payload.get(i).byteValue();
-        }
-        // ======================================================================
+    private static void writeTextOutput(String outputHrp, List<Byte> payload) {
+        byte[] outputBytes = Bytes.toArray(payload);
 
         String stringPayload = "";
         if (outputFormat.equals(InOutFormat.BASE64)) {
