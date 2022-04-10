@@ -157,12 +157,12 @@ public class Decoder {
         return new Segwit(data.get(0), decoded);
     }
 
-    public static void main(String[] args) {
-        Segwit segwit = decode("bc", "BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4");
-        assert segwit != null;
-        System.out.println(segwit.getType());
-        System.out.println(segwit.getContent());
-    }
+//    public static void main(String[] args) {
+//        Segwit segwit = decode("bc", "BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4");
+//        assert segwit != null;
+//        System.out.println(segwit.getType());
+//        System.out.println(segwit.getContent());
+//    }
 }
 
 /**
