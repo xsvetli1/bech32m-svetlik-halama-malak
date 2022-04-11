@@ -3,7 +3,7 @@ package org.example;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class Bech32mTest {
+public class EncoderTest {
 
 	private class Bech32mBlock {
 
@@ -22,7 +22,6 @@ public class Bech32mTest {
 
 		// inputs computed from test vectors
 		Bech32mBlock[] inputs = {
-				new Bech32mBlock("A", new byte[0]),
 				new Bech32mBlock("a", new byte[0]),
 				new Bech32mBlock("an83characterlonghumanreadablepartthatcontainsthetheexcludedcharactersbioandnumber1", new byte[0]),
 				new Bech32mBlock("abcdef", new byte[]{31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}),
@@ -33,7 +32,6 @@ public class Bech32mTest {
 
 		// expected outputs (TEST VECTORS)
 		String[] expected = {
-				"A1LQFN3A",
 				"a1lqfn3a",
 				"an83characterlonghumanreadablepartthatcontainsthetheexcludedcharactersbioandnumber11sg7hg6",
 				"abcdef1l7aum6echk45nj3s0wdvt2fg8x9yrzpqzd3ryx",
@@ -43,7 +41,7 @@ public class Bech32mTest {
 		};
 
 		for (int i = 0; i < inputs.length; i++) {
-			Assert.assertEquals(expected[i], Bech32m.encode(inputs[i].hrp, inputs[i].data));
+			Assert.assertEquals(expected[i], Encoder.encode(inputs[i].hrp, inputs[i].data));
 		}
 	}
 }
