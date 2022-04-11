@@ -8,6 +8,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.example.Constant.FAILURE;
+import static org.example.Constant.SUCCESS;
+
 /**
  * Main class for Bech32m encoding tool
  *
@@ -15,8 +18,6 @@ import java.util.stream.IntStream;
  */
 public class App 
 {
-    private final static int SUCCESS = 0;
-    private final static int FAILURE = 1;
 
     private final static String E_FLAG = "-e";
     private final static String D_FLAG = "-d";
@@ -50,6 +51,10 @@ public class App
 
         if (operation.equals(Operation.ENCODE)) {
             String output = Encoder.bech32mEncode(hrp, Bytes.toArray(input));
+            if (output == null) {
+                System.out.println("Encoding failed!");
+                return;
+            }
             writeOutput(output, List.of());
         } else if (operation.equals(Operation.DECODE)) {
             List<Object> hrpAndPayload = Decoder.bech32mDecode(bech32mBytesToString(input));
