@@ -41,7 +41,7 @@ public class EncoderTest {
 		};
 
 		for (int i = 0; i < inputs.length; i++) {
-			Assert.assertEquals(expected[i], Encoder.encode(inputs[i].hrp, inputs[i].data));
+			Assert.assertEquals(expected[i], Encoder.bech32mEncode(inputs[i].hrp, inputs[i].data));
 		}
 	}
 }

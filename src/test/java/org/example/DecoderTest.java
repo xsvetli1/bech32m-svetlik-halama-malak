@@ -14,7 +14,7 @@ public class DecoderTest {
 
     @Test
     public void bech32mTestVectorsTest1() {
-        List<Object> decoded = Decoder.bech32Decode("a1lqfn3a");
+        List<Object> decoded = Decoder.bech32mDecode("a1lqfn3a");
         assertNotNull(decoded);
 
         // HRP should not be changed
@@ -26,7 +26,7 @@ public class DecoderTest {
 
     @Test
     public void bech32mTestVectorsTest2() {
-        List<Object> decoded = Decoder.bech32Decode("a1lqfn3a");
+        List<Object> decoded = Decoder.bech32mDecode("a1lqfn3a");
         assertNotNull(decoded);
 
         // HRP should not be changed
@@ -38,7 +38,7 @@ public class DecoderTest {
 
     @Test
     public void bech32mTestVectorsTest3() {
-        List<Object> decoded = Decoder.bech32Decode("an83characterlonghumanreadablepartthatcontainsthetheexcludedcharactersbioandnumber11sg7hg6");
+        List<Object> decoded = Decoder.bech32mDecode("an83characterlonghumanreadablepartthatcontainsthetheexcludedcharactersbioandnumber11sg7hg6");
         assertNotNull(decoded);
 
         // HRP should not be changed
@@ -50,7 +50,7 @@ public class DecoderTest {
 
     @Test
     public void bech32mTestVectorsTest4() {
-        List<Object> decoded = Decoder.bech32Decode("abcdef1l7aum6echk45nj3s0wdvt2fg8x9yrzpqzd3ryx");
+        List<Object> decoded = Decoder.bech32mDecode("abcdef1l7aum6echk45nj3s0wdvt2fg8x9yrzpqzd3ryx");
         assertNotNull(decoded);
 
         // HRP should not be changed
@@ -60,7 +60,7 @@ public class DecoderTest {
 
     @Test
     public void bech32mTestVectorsTest5() {
-        List<Object> decoded = Decoder.bech32Decode("11llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllludsr8");
+        List<Object> decoded = Decoder.bech32mDecode("11llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllludsr8");
         assertNotNull(decoded);
 
         // HRP should not be changed
@@ -70,7 +70,7 @@ public class DecoderTest {
 
     @Test
     public void bech32mTestVectorsTest6() {
-        List<Object> decoded = Decoder.bech32Decode("split1checkupstagehandshakeupstreamerranterredcaperredlc445v");
+        List<Object> decoded = Decoder.bech32mDecode("split1checkupstagehandshakeupstreamerranterredcaperredlc445v");
         assertNotNull(decoded);
 
         // HRP should not be changed
@@ -80,7 +80,7 @@ public class DecoderTest {
 
     @Test
     public void bech32mTestVectorsTest7() {
-        List<Object> decoded = Decoder.bech32Decode("?1v759aa");
+        List<Object> decoded = Decoder.bech32mDecode("?1v759aa");
         assertNotNull(decoded);
 
         // HRP should not be changed

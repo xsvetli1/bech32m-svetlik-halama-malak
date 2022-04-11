@@ -10,6 +10,7 @@ import java.util.List;
  * @author Kristián Malák
  */
 public class Decoder {
+
     /**
      * private override of default public constructor
      */
@@ -21,7 +22,7 @@ public class Decoder {
      *
      * @param hrp  Human readable part
      * @param data Payload
-     * @return Encoding type (Bech32 or Bech32m) or null in case of error
+     * @return boolean true if everything was OK, false otherwise
      */
     private static boolean verifyChecksum(String hrp, byte[] data) {
         // expand HRP
@@ -39,12 +40,12 @@ public class Decoder {
     }
 
     /**
-     * Decodes the Bech32(m) message
+     * Decodes the Bech32m message
      *
      * @param bech message
-     * @return Human readable part, Payload, Encoding type or null in case of bad format
+     * @return Human readable part, Payload
      */
-    static List<Object> bech32Decode(String bech) {
+    static List<Object> bech32mDecode(String bech) {
         if (!bech.toLowerCase().equals(bech) && !bech.toUpperCase().equals(bech)) {
             return Collections.emptyList();
         }

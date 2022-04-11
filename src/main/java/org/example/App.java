@@ -49,10 +49,10 @@ public class App
         }
 
         if (operation.equals(Operation.ENCODE)) {
-            String output = Encoder.encode(hrp, Bytes.toArray(input));
+            String output = Encoder.bech32mEncode(hrp, Bytes.toArray(input));
             writeOutput(output, List.of());
         } else if (operation.equals(Operation.DECODE)) {
-            List<Object> hrpAndPayload = Decoder.bech32Decode(bech32mBytesToString(input));
+            List<Object> hrpAndPayload = Decoder.bech32mDecode(bech32mBytesToString(input));
             String outHRP = (String) hrpAndPayload.get(0);
             List<Byte> outPayload = (List<Byte>) hrpAndPayload.get(1);
             writeOutput(outHRP, outPayload);
