@@ -8,6 +8,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.example.Constant.FAILURE;
+import static org.example.Constant.SUCCESS;
+
 /**
  * Main class for Bech32m encoding tool
  *
@@ -15,8 +18,6 @@ import java.util.stream.IntStream;
  */
 public class App 
 {
-    private final static int SUCCESS = 0;
-    private final static int FAILURE = 1;
 
     private final static String E_FLAG = "-e";
     private final static String D_FLAG = "-d";

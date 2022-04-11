@@ -52,12 +52,12 @@ public class Encoder {
 	public static String bech32mEncode(String hrp, byte[] data) {
 
 		// check HRP input
-		if (!Bech32mUtils.isHRPValid(hrp)) {
+		if (Bech32mUtils.isHRPValid(hrp) == Constant.FAILURE) {
 			return null;
 		}
 
 		// check data values
-		if (!Bech32mUtils.isEncodeInputDataValid(data)) {
+		if (Bech32mUtils.isEncodeInputDataValid(data) == Constant.FAILURE) {
 			return null;
 		}
 
