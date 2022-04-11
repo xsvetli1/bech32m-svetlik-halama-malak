@@ -1,8 +1,6 @@
 package org.example;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 /**
  * Class provides common functionality used in both encoding and decoding.
@@ -72,9 +70,10 @@ public class Bech32mUtils {
 	/**
 	 * Checks validity of HRP (Human-readable part).
 	 *
-	 * Method checks two things:
+	 * Method checks three things:
 	 *   1.) HRP is either in lowercase or uppercase, but not both (only one set of characters)
 	 *   2.) HRP contains only valid characters (33-126 value range)
+	 *   3.) HRP has valid length (range of [1;83])
 	 *
 	 * @param hrp human-readable part
 	 * @return boolean true, if hrp is valid, false otherwise
