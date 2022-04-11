@@ -45,6 +45,11 @@ public class App
             return;
         }
 
+        if (input.size() == 0 && inputFile == null) {
+            printHelp("Missing input or hrp!");
+            return;
+        }
+
         if (input.size() == 0 && inputFile != null) {
             loadInputFromFile();
         }
@@ -124,6 +129,7 @@ public class App
             i++;
         }
         if (hrp == null && operation.equals(Operation.ENCODE)) {
+            printHelp("HRP not provided!");
             return FAILURE;
         }
         input = textToBinaryInput(presubmittedInput);
