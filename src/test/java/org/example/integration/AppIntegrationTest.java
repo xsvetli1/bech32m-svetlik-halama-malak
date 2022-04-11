@@ -64,8 +64,7 @@ public class AppIntegrationTest {
 		App.main(flags);
 
 		// Human-readable part should not be changed
-		final String expectedOut = HRP_PRINTOUT_PREFIX + "a" + HRP_PRINTOUT_SUFFIX
-				+ PAYLOAD_PRINTOUT_PREFIX + "" + PAYLOAD_PRINTOUT_SUFFIX;
+		final String expectedOut = HRP_PRINTOUT_PREFIX + "a" + HRP_PRINTOUT_SUFFIX;
 
 		Assert.assertEquals(expectedOut, out.toString());
 		Assert.assertEquals("", err.toString());

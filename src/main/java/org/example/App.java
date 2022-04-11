@@ -239,7 +239,9 @@ public class App
 
         try(PrintStream printStream = outputFile != null ? new PrintStream(outputFile) : System.out) {
             printStream.println(outputHrp);
-            printStream.println(stringPayload);
+            if (!stringPayload.isEmpty()) {
+                printStream.println(stringPayload);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
