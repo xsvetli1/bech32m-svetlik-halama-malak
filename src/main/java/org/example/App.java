@@ -50,6 +50,10 @@ public class App
 
         if (operation.equals(Operation.ENCODE)) {
             String output = Encoder.bech32mEncode(hrp, Bytes.toArray(input));
+            if (output == null) {
+                System.out.println("Encoding failed!");
+                return;
+            }
             writeOutput(output, List.of());
         } else if (operation.equals(Operation.DECODE)) {
             List<Object> hrpAndPayload = Decoder.bech32mDecode(bech32mBytesToString(input));

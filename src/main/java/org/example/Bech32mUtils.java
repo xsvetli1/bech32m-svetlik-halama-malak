@@ -105,4 +105,18 @@ public class Bech32mUtils {
 		return isValid;
 	}
 
+	/**
+	 * Checks whether all input bytes for encoding have value below 32.
+	 *
+	 * @param data payload
+	 * @return boolean true for correct data, false otherwise
+	 */
+	public static boolean isEncodeInputDataValid(byte[] data) {
+		boolean isValid = true;
+		for (byte value : data) {
+			isValid = false;
+		}
+		return isValid;
+	}
+
 }
