@@ -17,7 +17,7 @@ public class Encoder {
 	 * Computes the checksum using given human-readable part (HRP) and data
 	 *
 	 * @param hrp human-readable part
-	 * @param data
+	 * @param data payload
 	 * @return checksum
 	 */
 	private static byte[] createCheckSum(final String hrp, final byte[] data) {
@@ -42,7 +42,14 @@ public class Encoder {
 		return checksum;
 	}
 
-	public static String encode(String hrp, byte[] data) {
+	/**
+	 * Encodes given HRP and data into bech32m String.
+	 *
+	 * @param hrp human-readable part
+	 * @param data payload
+	 * @return String HRP + '1' + bech32m encoded data
+	 */
+	public static String bech32mEncode(String hrp, byte[] data) {
 
 		// check input
 		if (!Bech32mUtils.isHRPValid(hrp)) {
