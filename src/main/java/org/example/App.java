@@ -53,6 +53,10 @@ public class App
             writeOutput(output, List.of());
         } else if (operation.equals(Operation.DECODE)) {
             List<Object> hrpAndPayload = Decoder.bech32mDecode(bech32mBytesToString(input));
+            if (hrpAndPayload.isEmpty()) {
+                System.out.println("Decoding failed!");
+                return;
+            }
             String outHRP = (String) hrpAndPayload.get(0);
             List<Byte> outPayload = (List<Byte>) hrpAndPayload.get(1);
             writeOutput(outHRP, outPayload);
@@ -84,6 +88,8 @@ public class App
             }
 
             switch (args[i]) {
+                case E_FLAG:
+                    break;
                 case D_FLAG:
                     operation = Operation.DECODE;
                     inputFormat = InOutFormat.BECH32M;
@@ -128,12 +134,15 @@ public class App
      */
     private static List<Byte> textToBinaryInput(String data) {
         byte[] decoded;
-        if (inputFormat.equals(InOutFormat.BECH32M) || inputFormat.equals(InOutFormat.BASE64)) {
-            decoded = data.getBytes();
-        } else if (inputFormat.equals(InOutFormat.HEX)) {
-            decoded = new BigInteger(data, 16).toByteArray(); // TODO: not safe for leading zeros
+        if (inputFormat.equals(InOutFormat.HEX)) {
+            decoded = new BigInteger(data, 16).toByteArray();
+        } else if (inputFormat.equals(InOutFormat.BASE64)) {
+            decoded = Base64.getDecoder().decode(data.getBytes());
         } else {
-            return null;
+            // All other possibilities of InOutFormat should not be transformed, because:
+            // - BECH32M input is valid only for decode and decode function expects this format
+            // - BINARY input is valid only for encode and encode function expects this format
+            decoded = data.getBytes();
         }
         return IntStream.range(0, decoded.length)
                 .mapToObj(i -> decoded[i])
