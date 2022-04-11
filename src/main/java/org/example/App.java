@@ -88,6 +88,8 @@ public class App
             }
 
             switch (args[i]) {
+                case E_FLAG:
+                    break;
                 case D_FLAG:
                     operation = Operation.DECODE;
                     inputFormat = InOutFormat.BECH32M;
