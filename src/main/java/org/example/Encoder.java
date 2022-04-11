@@ -45,6 +45,11 @@ public class Encoder {
 	/**
 	 * Encodes given HRP and data into bech32m String.
 	 *
+	 * Firstly, method checks whether HRP has correct parameters (format, length).
+	 * Then, HRP is converted into lower-case and combine data with checksum.
+	 * Later, HRP and its separator are combined and last step (data encoding) follows.
+	 * After that, encoded data are appended to HRP and its separator.
+	 *
 	 * @param hrp human-readable part
 	 * @param data payload
 	 * @return String HRP + '1' + bech32m encoded data
@@ -65,12 +70,13 @@ public class Encoder {
 		System.arraycopy(data, 0, dataWithChecksum, 0, data.length);
 		System.arraycopy(createCheckSum(hrp, data), 0, dataWithChecksum, data.length, Bech32mUtils.CHECKSUM_LEN);
 
-		StringBuilder encoded = new StringBuilder(hrp.length() + 1 +dataWithChecksum.length);
+		StringBuilder encoded = new StringBuilder(hrp.length() + 1 + dataWithChecksum.length);
 
 		// Firstly, append hrp and separator
 		encoded.append(hrp);
 		encoded.append('1');
 
+		// encode data with checksum
 		for (byte value : dataWithChecksum) {
 			encoded.append(Bech32mUtils.BECH32M_CHARSET.charAt(value));
 		}
