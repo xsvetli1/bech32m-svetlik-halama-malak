@@ -4,7 +4,7 @@ import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 
 public class SimpleDecodeFuzzer {
     public static void fuzzerTestOneInput(FuzzedDataProvider data) {
-        Decoder.bech32Decode(data.consumeRemainingAsAsciiString());
+        Decoder.bech32mDecode(data.consumeRemainingAsAsciiString());
     }
 
     public static void main(String[] args) {

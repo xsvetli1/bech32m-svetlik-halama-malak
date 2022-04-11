@@ -111,7 +111,7 @@
               <archive>
                 <manifest>
                   <addClasspath>true</addClasspath>
-                  <mainClass>org.example.SimpleDecodeFuzzer</mainClass>
+                  <mainClass>org.example.App</mainClass>
                 </manifest>
               </archive>
               <descriptorRefs>
