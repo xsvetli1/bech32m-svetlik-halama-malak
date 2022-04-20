@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: org.example.App
+Class-Path: guava-16.0.1.jar
+
