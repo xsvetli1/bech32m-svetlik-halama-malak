@@ -4,6 +4,7 @@ import com.google.common.primitives.Bytes;
 
 import java.io.*;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -68,7 +69,12 @@ public class App
                 return;
             }
             String outHRP = (String) hrpAndPayload.get(0);
-            List<Byte> outPayload = (List<Byte>) hrpAndPayload.get(1);
+            String outPayloadString = (String) hrpAndPayload.get(1);
+            byte[] arrayBytes = outPayloadString.getBytes(StandardCharsets.UTF_8);
+            List<Byte> outPayload = new ArrayList<>();
+            for (Byte current: arrayBytes){
+                outPayload.add(current);
+            }
             writeOutput(outHRP, outPayload);
         }
     }
