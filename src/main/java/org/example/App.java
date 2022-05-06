@@ -4,11 +4,9 @@ import com.google.common.primitives.Bytes;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import static org.example.Constant.FAILURE;
 import static org.example.Constant.SUCCESS;
 
@@ -69,13 +67,16 @@ public class App
                 return;
             }
             String outHRP = (String) hrpAndPayload.get(0);
-            String outPayloadString = (String) hrpAndPayload.get(1);
-            byte[] arrayBytes = outPayloadString.getBytes(StandardCharsets.UTF_8);
+            Object objectObtained = hrpAndPayload.get(1);
             List<Byte> outPayload = new ArrayList<>();
-            for (Byte current: arrayBytes){
-                outPayload.add(current);
+            if(objectObtained instanceof List){
+                if(((List<?>)objectObtained).size()>0 && (((List<?>)objectObtained).get(0) instanceof Byte)){
+                    for (Object aByte : (List<?>) objectObtained) {
+                        outPayload.add((Byte)aByte);
+                    }
+                }
             }
-            writeOutput(outHRP, outPayload);
+            writeOutput(outHRP,  outPayload);
         }
     }
 
